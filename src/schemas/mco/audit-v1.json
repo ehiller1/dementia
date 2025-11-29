@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/mco/audit/1.0.0",
+  "type": "object",
+  "title": "MCO Audit Event",
+  "description": "Schema changes and system audit events",
+  "properties": {
+    "@context": { "type": "object" },
+    "audit_id": { "type": "string" },
+    "type": { "type": "string", "enum": ["schema_registered", "schema_updated", "schema_breaking_change", "schema_deprecated"] },
+    "schema_name": { "type": "string" },
+    "schema_version": { "type": "string" },
+    "schema_uri": { "type": "string", "format": "uri" },
+    "changes": { "type": "array" },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "required": ["@context", "audit_id", "type", "timestamp"]
+}

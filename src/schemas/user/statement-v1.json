@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/user/statement/1.0.0",
+  "type": "object",
+  "title": "User Statement",
+  "description": "User statement for intent classification and routing",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context for semantic meaning"
+    },
+    "statement_id": {
+      "type": "string",
+      "description": "Unique statement identifier"
+    },
+    "statement": {
+      "type": "string",
+      "description": "User's natural language statement"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User identifier"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Conversation context"
+    },
+    "context": {
+      "type": "object",
+      "description": "Additional context",
+      "additionalProperties": true
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Statement timestamp"
+    }
+  },
+  "required": [
+    "@context",
+    "statement_id",
+    "statement"
+  ]
+}

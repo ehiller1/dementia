@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+
+    "outDir": "./dist-server",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": false,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts", "src/**/*.ts"]
+}

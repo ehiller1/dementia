@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* Pure white background */
+    --foreground: 240 10% 3.9%; /* Dark text for contrast */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --primary: 142 100% 35%; /* Keeping the existing green primary color */
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    --destructive: 4 92% 49%;
+    --destructive-foreground: 0 0% 98%;
+
+    --warning: 31 100% 50%;
+    --warning-foreground: 0 0% 98%;
+
+    --info: 199 100% 50%;
+    --info-foreground: 0 0% 98%;
+
+    --success: 142 100% 35%;
+    --success-foreground: 0 0% 98%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    
+    --radius: 0.75rem;
+  }
+  
+  .dark {
+    --background: 0 0% 100%; /* White background in dark mode as well */
+    --foreground: 240 10% 3.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --primary: 142 100% 35%;
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    --destructive: 4 92% 49%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Archivo', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* Custom global animations and transitions */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  
+  .scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Modified glass morphism effects - no longer apply blur */
+  .glass {
+    background: white;
+    border: 1px solid rgba(240, 240, 240, 0.5);
+  }
+  
+  .dark .glass {
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(40, 40, 45, 0.18);
+  }
+
+  /* Hide header when dialogs are open */
+  [data-state="open"] ~ .global-header,
+  [data-state="open"] ~ #main-global-header {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+  }
+  
+  /* Ensure dialog content appears above everything */
+  [role="dialog"] {
+    z-index: 1100 !important;
+  }
+  
+  [data-radix-dialog-overlay] {
+    z-index: 1050 !important;
+  }
+  
+  /* Fix for overflow issues in containers */
+  .overflow-visible {
+    overflow: visible !important;
+  }
+  
+  /* Ensure proper rendering of scrollable content */
+  .scroll-container {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+}
+
+/* Additional stronger selectors to ensure only one header is displayed */
+.global-header ~ header,
+body > header:not(.global-header),
+main header,
+div > header:not(.global-header),
+[role="banner"]:not(.global-header) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Make sure the global header is always visible */
+.global-header {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1000 !important; /* Very high z-index to ensure it's on top */
+}
+
+/* Add some debugging to find any non-standard header elements */
+div[class*="header"]:not(.global-header),
+div[class*="Header"]:not(.global-header),
+nav[class*="header"]:not(.global-header),
+nav[class*="Header"]:not(.global-header) {
+  display: none !important;
+}
+
+/* Add special styles for the company selection modal overlay */
+[data-radix-dialog-overlay].company-selection-overlay {
+  background-color: rgba(255, 255, 255, 1) !important;
+  z-index: 2000 !important;
+}
+
+/* Ensure the company selection dialog appears on top of everything */
+[role="dialog"].company-selection-dialog {
+  z-index: 2001 !important;
+  background: white !important;
+}
+
+/* Fix for select dropdown in company selection modal */
+[role="dialog"].company-selection-dialog [data-radix-select-content] {
+  z-index: 3000 !important;
+  background: white !important;
+  pointer-events: auto !important;
+}
+
+/* Hide everything else when company selection is open */
+body.company-selection-open header,
+body.company-selection-open main,
+body.company-selection-open nav,
+body.company-selection-open .sidebar {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
+
+/* Only show the company selection dialog */
+body.company-selection-open [role="dialog"].company-selection-dialog,
+body.company-selection-open [data-radix-dialog-overlay].company-selection-overlay {
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  pointer-events: auto !important;
+}

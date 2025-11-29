@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/excel/analysis-request/1.0.0",
+  "type": "object",
+  "title": "Excel Analysis Request",
+  "description": "Request for Excel file analysis by the Excel Analysis Crew",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context for semantic meaning"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Unique request identifier"
+    },
+    "file_path": {
+      "type": "string",
+      "description": "Path to the Excel file to analyze"
+    },
+    "file_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to download the Excel file"
+    },
+    "query": {
+      "type": "string",
+      "description": "Natural language query about the Excel data"
+    },
+    "query_type": {
+      "type": "string",
+      "enum": ["schema", "data", "insight", "general"],
+      "description": "Type of analysis requested"
+    },
+    "options": {
+      "type": "object",
+      "description": "Analysis options",
+      "properties": {
+        "include_summary": {
+          "type": "boolean",
+          "default": true
+        },
+        "include_visualizations": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_rows": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "default": 1000
+        },
+        "semantic_search": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User making the request"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Conversation context"
+    }
+  },
+  "required": [
+    "@context",
+    "request_id",
+    "query"
+  ],
+  "oneOf": [
+    { "required": ["file_path"] },
+    { "required": ["file_url"] }
+  ]
+}
