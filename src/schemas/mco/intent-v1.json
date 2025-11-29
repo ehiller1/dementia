@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/mco/intent/1.0.0",
+  "type": "object",
+  "title": "MCO Intent",
+  "description": "Marketing Campaign Optimization intent with goals and constraints",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context for semantic meaning"
+    },
+    "subject": {
+      "type": "object",
+      "description": "Entity this intent applies to",
+      "properties": {
+        "entityType": {
+          "type": "string",
+          "enum": ["portfolio", "campaign", "channel", "product"]
+        },
+        "entityId": {
+          "type": "string"
+        }
+      },
+      "required": ["entityType", "entityId"]
+    },
+    "objective": {
+      "type": "string",
+      "description": "Primary optimization objective",
+      "enum": [
+        "maximize_roas",
+        "maximize_revenue",
+        "maximize_reach",
+        "minimize_cpa",
+        "maintain_budget",
+        "optimize_mix"
+      ]
+    },
+    "target_metrics": {
+      "type": "object",
+      "description": "Target KPI values",
+      "properties": {
+        "roas_target": {
+          "type": "number",
+          "minimum": 0
+        },
+        "revenue_target_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cpa_target_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reach_target": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "description": "Optimization constraints",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string",
+            "enum": ["<", "<=", ">", ">=", "==", "IN", "NOT_IN", "BETWEEN"]
+          },
+          "value": {}
+        },
+        "required": ["name", "operator", "value"]
+      }
+    },
+    "policies": {
+      "type": "array",
+      "description": "Policy URIs to apply",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "time_horizon": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "requester": {
+      "type": "string",
+      "description": "User or system requesting optimization"
+    }
+  },
+  "required": [
+    "@context",
+    "subject",
+    "objective"
+  ]
+}

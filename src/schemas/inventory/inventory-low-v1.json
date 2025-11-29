@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/inventory/inventory-low/1.0.0",
+  "title": "Inventory Low Event",
+  "description": "Published when inventory drops below threshold",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context mapping fields to canonical URIs",
+      "properties": {
+        "schema": { "type": "string", "const": "https://schema.org/" },
+        "ex": { "type": "string", "const": "https://example.com/ontology#" },
+        "retailer": { "type": "string", "const": "ex:Retailer" },
+        "sku": { "type": "string", "const": "schema:sku" },
+        "dc": { "type": "string", "const": "ex:DistributionCenter" },
+        "inventory": { "type": "string", "const": "schema:inventoryLevel" },
+        "oosRisk": { "type": "string", "const": "ex:OutOfStockRisk" }
+      },
+      "required": ["schema", "ex"]
+    },
+    "retailer": {
+      "type": "string",
+      "description": "Retailer name"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Product SKU",
+      "pattern": "^[A-Z]{3}-[0-9]{4}$"
+    },
+    "dc": {
+      "type": "string",
+      "description": "Distribution center",
+      "pattern": "^DC-[A-Za-z]+$"
+    },
+    "on_hand_units": {
+      "type": "integer",
+      "description": "Current inventory on hand",
+      "minimum": 0
+    },
+    "threshold": {
+      "type": "integer",
+      "description": "Low inventory threshold",
+      "minimum": 0
+    },
+    "oos_risk_days": {
+      "type": "integer",
+      "description": "Days until potential out-of-stock",
+      "minimum": 0
+    },
+    "lead_time_days": {
+      "type": "integer",
+      "description": "Supplier lead time in days",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the low inventory was detected"
+    }
+  },
+  "required": [
+    "@context",
+    "retailer",
+    "sku",
+    "dc",
+    "on_hand_units",
+    "threshold",
+    "oos_risk_days"
+  ]
+}

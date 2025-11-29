@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/mco/outcome/1.0.0",
+  "type": "object",
+  "title": "MCO Outcome Event",
+  "description": "Causal inference outcome with counterfactuals",
+  "properties": {
+    "@context": { "type": "object" },
+    "outcome_id": { "type": "string" },
+    "experiment_id": { "type": "string" },
+    "incremental_roas": { "type": "number" },
+    "incremental_cpa": { "type": "number" },
+    "lift": { "type": "number" },
+    "p_value": { "type": "number" },
+    "confidence_interval": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+    "method": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "required": ["@context", "outcome_id", "experiment_id", "lift"]
+}

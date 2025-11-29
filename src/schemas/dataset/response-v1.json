@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/dataset/response/1.0.0",
+  "type": "object",
+  "title": "Dataset Query Response",
+  "description": "Response from dataset query agents",
+  "properties": {
+    "@context": { "type": "object" },
+    "query_id": { "type": "string" },
+    "dataset_name": { "type": "string" },
+    "results": { "type": "array" },
+    "answer": { "type": "string" },
+    "row_count": { "type": "integer" }
+  },
+  "required": ["@context", "query_id", "dataset_name", "results", "answer"]
+}

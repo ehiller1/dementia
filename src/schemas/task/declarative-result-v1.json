@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.acme.com/task/declarative-result/1.0.0",
+  "type": "object",
+  "title": "Declarative Task Result",
+  "description": "Result from declarative knowledge task execution",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context for semantic meaning"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "ID of the task this responds to"
+    },
+    "result": {
+      "type": "string",
+      "description": "Task execution result"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence in the result"
+    },
+    "sources": {
+      "type": "array",
+      "description": "Sources used for the result",
+      "items": {
+        "type": "string"
+      }
+    },
+    "execution_time_ms": {
+      "type": "integer",
+      "description": "Execution time in milliseconds"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "@context",
+    "task_id",
+    "result"
+  ]
+}

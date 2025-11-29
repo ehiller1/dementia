@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "quest-agent-forge-main",
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

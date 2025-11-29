@@ -1,0 +1,390 @@
+{
+  "name": "inventory_allocation",
+  "displayName": "Inventory & Allocation",
+  "version": "1.0",
+  "description": "Complete decision stack for inventory optimization and service level management",
+  "function": "inventory",
+  "enabled": true,
+  
+  "terms": {
+    "glossary": {
+      "OSA": "On-Shelf Availability - Products available when customers shop",
+      "OTIF": "On-Time In-Full - Delivery performance metric",
+      "Case Fill": "Percentage of ordered cases delivered",
+      "Safety Stock": "Buffer inventory to prevent stockouts"
+    },
+    "kpis": [
+      {
+        "name": "OSA",
+        "ontology_concept": "ex:OSA",
+        "calculation": "available_items / total_items",
+        "target": 0.97,
+        "threshold_warning": 0.95,
+        "threshold_critical": 0.90,
+        "unit": "percentage"
+      },
+      {
+        "name": "OTIF",
+        "ontology_concept": "ex:OTIF",
+        "calculation": "on_time_in_full_orders / total_orders",
+        "target": 0.95,
+        "threshold_warning": 0.90,
+        "threshold_critical": 0.85,
+        "unit": "percentage"
+      },
+      {
+        "name": "Case Fill Rate",
+        "ontology_concept": "ex:CaseFill",
+        "calculation": "cases_delivered / cases_ordered",
+        "target": 0.98,
+        "threshold_warning": 0.95,
+        "threshold_critical": 0.90,
+        "unit": "percentage"
+      },
+      {
+        "name": "Days of Supply",
+        "ontology_concept": "ex:SafetyStock",
+        "calculation": "current_inventory / avg_daily_demand",
+        "target": 14,
+        "threshold_warning": 10,
+        "threshold_critical": 7,
+        "unit": "days"
+      }
+    ],
+    "ontology_concepts": [
+      "ex:OSA",
+      "ex:OTIF",
+      "ex:CaseFill",
+      "ex:SafetyStock",
+      "ex:SKU",
+      "ex:DC",
+      "ex:FC",
+      "ex:InventoryDecision",
+      "ex:Allocation"
+    ]
+  },
+  
+  "patterns": [
+    {
+      "name": "shortage_risk",
+      "displayName": "Shortage Risk Detection",
+      "description": "Detect SKUs at risk of stockout within planning horizon",
+      "detection": {
+        "event_type": "InventoryLevel",
+        "conditions": [
+          "days_of_supply < safety_stock_days",
+          "demand_trend = 'increasing' OR upcoming_promotion = true"
+        ],
+        "data_sources": ["inventory_snapshot", "demand_forecast", "promotion_calendar"],
+        "check_frequency": "every_4_hours"
+      },
+      "severity": "high",
+      "confidence_threshold": 0.85,
+      "linked_playbook": "expedite_replenishment"
+    },
+    {
+      "name": "hero_sku_starve",
+      "displayName": "Hero SKU Shortage",
+      "description": "Top revenue SKUs approaching stockout",
+      "detection": {
+        "event_type": "InventoryLevel",
+        "conditions": [
+          "sku IN hero_sku_list",
+          "days_of_supply < 10",
+          "revenue_contribution_pct > 5"
+        ],
+        "data_sources": ["inventory_snapshot", "sales_data"],
+        "check_frequency": "hourly"
+      },
+      "severity": "critical",
+      "confidence_threshold": 0.95,
+      "linked_playbook": "protect_hero_supply"
+    },
+    {
+      "name": "allocation_imbalance",
+      "displayName": "Allocation Imbalance",
+      "description": "Inventory distribution doesn't match demand patterns",
+      "detection": {
+        "event_type": "AllocationAnalysis",
+        "conditions": [
+          "location_osa_variance > 0.10",
+          "high_demand_locations_undersupplied = true"
+        ],
+        "data_sources": ["inventory_by_location", "demand_by_location"],
+        "check_frequency": "daily"
+      },
+      "severity": "medium",
+      "confidence_threshold": 0.80,
+      "linked_playbook": "rebalance_allocation"
+    },
+    {
+      "name": "late_shipment_risk",
+      "displayName": "Late Shipment Risk",
+      "description": "Orders at risk of missing OTIF targets",
+      "detection": {
+        "event_type": "ShipmentTracking",
+        "conditions": [
+          "days_until_due < lead_time_remaining",
+          "order_value_usd > 10000"
+        ],
+        "data_sources": ["open_orders", "carrier_tracking"],
+        "check_frequency": "every_2_hours"
+      },
+      "severity": "high",
+      "confidence_threshold": 0.90,
+      "linked_playbook": "expedite_shipment"
+    }
+  ],
+  
+  "models": {
+    "llm_config": {
+      "system_prompt": "You are an inventory optimization expert specializing in retail supply chain management. You optimize service levels (OSA, OTIF) while minimizing inventory costs. Always consider lead times, safety stock requirements, and cross-location effects. Provide DC/FC-level recommendations with clear trade-offs.",
+      "temperature": 0.2,
+      "max_tokens": 2000,
+      "domain_context": ["retail", "supply_chain", "distribution"]
+    },
+    "forecast_models": [
+      {
+        "type": "demand_forecast",
+        "algorithm": "lstm",
+        "features": ["historical_demand", "promotions", "seasonality", "weather"],
+        "horizon_days": 60
+      },
+      {
+        "type": "lead_time_forecast",
+        "algorithm": "survival_analysis",
+        "features": ["supplier", "product_category", "distance", "carrier"],
+        "horizon_days": 30
+      }
+    ],
+    "optimization_models": [
+      {
+        "type": "inventory_optimization",
+        "objective": "minimize_cost",
+        "constraints": ["osa >= 0.95", "otif >= 0.90", "max_inventory_value <= budget"]
+      },
+      {
+        "type": "allocation_optimization",
+        "objective": "maximize_service_level",
+        "constraints": ["total_units = available_inventory", "min_allocation_per_location >= 1"]
+      }
+    ]
+  },
+  
+  "entities": {
+    "primary": ["SKU", "DC", "FC"],
+    "related": ["Supplier", "PO", "Shipment", "Location", "Customer"],
+    "relationships": [
+      "SKU -> DC (stocked_at)",
+      "DC -> FC (ships_to)",
+      "PO -> SKU (orders)",
+      "Shipment -> PO (fulfills)",
+      "FC -> Location (serves)"
+    ],
+    "ontology_view": "inventory_entity_graph",
+    "cross_system_mappings": {
+      "SKU": {
+        "erp": "material_number",
+        "wms": "item_id",
+        "retail": "upc"
+      },
+      "DC": {
+        "erp": "plant_code",
+        "wms": "warehouse_id"
+      }
+    }
+  },
+  
+  "plays": [
+    {
+      "name": "expedite_replenishment",
+      "displayName": "Expedite Replenishment",
+      "description": "Fast-track PO and shipment for at-risk SKUs",
+      "playbook_file": "expedite_replenishment.yaml",
+      "template_id": null,
+      "sla_hours": 2,
+      "auto_execute": false,
+      "requires_approval_above_usd": 15000
+    },
+    {
+      "name": "protect_hero_supply",
+      "displayName": "Protect Hero SKU Supply",
+      "description": "Priority allocation and expedited shipping for top revenue SKUs",
+      "playbook_file": "protect_hero_supply.yaml",
+      "template_id": null,
+      "sla_hours": 1,
+      "auto_execute": true,
+      "requires_approval_above_usd": 25000
+    },
+    {
+      "name": "rebalance_allocation",
+      "displayName": "Rebalance Allocation",
+      "description": "Redistribute inventory to match demand patterns",
+      "playbook_file": "rebalance_allocation.yaml",
+      "template_id": null,
+      "sla_hours": 8,
+      "auto_execute": false,
+      "requires_approval_above_usd": 10000
+    },
+    {
+      "name": "expedite_shipment",
+      "displayName": "Expedite Shipment",
+      "description": "Upgrade shipping method to meet OTIF deadline",
+      "playbook_file": "expedite_shipment.yaml",
+      "template_id": null,
+      "sla_hours": 4,
+      "auto_execute": false,
+      "requires_approval_above_usd": 5000
+    }
+  ],
+  
+  "prompts": {
+    "shortage_mitigation_template": {
+      "description": "Template for shortage risk mitigation",
+      "required_inputs": ["sku", "days_of_supply", "demand_forecast", "lead_time", "supplier_options"],
+      "expected_outputs": ["recommended_action", "po_quantity", "expedite_required", "cost_impact", "confidence"],
+      "template": "SKU {{sku}} has only {{days_of_supply}} days of supply. Demand forecast shows {{demand_forecast}}. Lead time is {{lead_time}} days. Available suppliers: {{supplier_options}}. Recommend optimal replenishment strategy."
+    },
+    "allocation_optimization_template": {
+      "description": "Optimize allocation across locations",
+      "required_inputs": ["sku", "available_units", "demand_by_location", "current_allocation", "service_targets"],
+      "expected_outputs": ["optimal_allocation", "expected_osa_improvement", "rebalancing_cost", "confidence"],
+      "template": "Optimize allocation of {{available_units}} units of {{sku}} across locations. Current: {{current_allocation}}. Demand: {{demand_by_location}}. Service targets: {{service_targets}}."
+    }
+  },
+  
+  "crew": {
+    "manager": "inventory-orchestration-manager",
+    "workers": [
+      "demand-forecasting",
+      "inventory-optimization",
+      "allocation-optimizer",
+      "supply-chain-analysis"
+    ],
+    "mode": "hierarchical"
+  },
+  
+  "governance": {
+    "constraints": [
+      {
+        "type": "inventory",
+        "field": "po_reduction_pct",
+        "operator": "lte",
+        "value": 0.10,
+        "severity": "block",
+        "message": "PO reduction cannot exceed 10%"
+      },
+      {
+        "type": "service_level",
+        "field": "osa_target",
+        "operator": "gte",
+        "value": 0.95,
+        "severity": "block",
+        "message": "Cannot reduce inventory below 95% OSA target"
+      },
+      {
+        "type": "inventory",
+        "field": "safety_stock_days",
+        "operator": "gte",
+        "value": 7,
+        "severity": "block",
+        "message": "Safety stock must maintain at least 7 days coverage"
+      },
+      {
+        "type": "spend",
+        "field": "expedite_cost_usd",
+        "operator": "lte",
+        "value": 25000,
+        "severity": "approve",
+        "message": "Expedite cost exceeds $25,000 - requires director approval"
+      }
+    ],
+    "approval_workflows": {
+      "inventory_adjustment": {
+        "operator": 5000,
+        "manager": 15000,
+        "director": 50000,
+        "admin": 999999
+      },
+      "expedited_shipping": {
+        "operator": 2000,
+        "manager": 10000,
+        "director": 30000
+      }
+    },
+    "rate_limits": {
+      "max_actions_per_hour": 30,
+      "max_actions_per_day": 100,
+      "max_concurrent": 5
+    }
+  },
+  
+  "integration": {
+    "data_sources": [
+      {
+        "name": "ERP System",
+        "type": "rest_api",
+        "endpoint": "${ERP_API_ENDPOINT}",
+        "auth": "oauth2",
+        "refresh_frequency": "every_2_hours"
+      },
+      {
+        "name": "WMS Data Feed",
+        "type": "database",
+        "connection": "${WMS_DB_CONNECTION}",
+        "refresh_frequency": "every_4_hours"
+      },
+      {
+        "name": "Demand Forecast Service",
+        "type": "rest_api",
+        "endpoint": "${FORECAST_API_ENDPOINT}",
+        "auth": "api_key",
+        "refresh_frequency": "daily"
+      },
+      {
+        "name": "Carrier Tracking",
+        "type": "webhook",
+        "endpoint": "${CARRIER_WEBHOOK_URL}",
+        "refresh_frequency": "real_time"
+      }
+    ],
+    "event_streams": [
+      "stream:inventory:level-change",
+      "stream:inventory:shipment-update",
+      "stream:inventory:demand-signal"
+    ],
+    "output_destinations": [
+      "mesh:commands",
+      "decisions_table",
+      "erp_integration",
+      "email_notifications"
+    ]
+  },
+  
+  "deployment": {
+    "prerequisites": [
+      "ERP API credentials configured",
+      "WMS database access granted",
+      "Demand forecast service connected",
+      "Carrier webhooks registered",
+      "Redis Streams running",
+      "CrewAI agents registered"
+    ],
+    "setup_steps": [
+      "register_ontology_concepts",
+      "create_event_patterns",
+      "deploy_playbooks",
+      "register_crew",
+      "create_governance_policy",
+      "warm_caches",
+      "start_monitoring"
+    ],
+    "validation_checks": [
+      "ontology_concepts_exist",
+      "playbooks_loadable",
+      "agents_responsive",
+      "data_sources_accessible",
+      "governance_constraints_valid"
+    ]
+  }
+}
