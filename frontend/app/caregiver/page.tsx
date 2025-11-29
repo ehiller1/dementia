@@ -14,7 +14,12 @@ import {
   AlertTriangle,
   ShoppingCart,
   Sparkles,
-  BookOpen
+  BookOpen,
+  X,
+  User,
+  Phone,
+  Mail,
+  Activity
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -178,8 +183,7 @@ export default function CaregiverDashboard() {
               return (
                 <div
                   key={patient.patient_id}
-                  className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100 hover:border-blue-300 transition-all cursor-pointer"
-                  onClick={() => setSelectedPatient(patient.patient_id)}
+                  className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-100 hover:border-blue-300 transition-all"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -236,7 +240,13 @@ export default function CaregiverDashboard() {
                     >
                       Analytics
                     </Link>
-                    <button className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedPatient(patient.patient_id)
+                      }}
+                      className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium"
+                    >
                       Details
                     </button>
                   </div>
@@ -281,6 +291,170 @@ export default function CaregiverDashboard() {
             <p className="text-sm text-gray-600">Configure preferences</p>
           </Link>
         </div>
+
+        {/* Patient Details Modal */}
+        {selectedPatient && (() => {
+          const patient = patients.find(p => p.patient_id === selectedPatient)
+          if (!patient) return null
+          const sentiment = getSentimentLabel(patient.average_sentiment_7d)
+          
+          return (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedPatient(null)}>
+              <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Modal Header */}
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-6 rounded-t-2xl">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                        <User className="w-8 h-8" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold">{patient.patient_name}</h2>
+                        <p className="text-blue-100 mt-1">Patient ID: {patient.patient_id}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedPatient(null)}
+                      className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-6 space-y-6">
+                  {/* Quick Stats */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-4 text-center">
+                      <MessageSquare className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-blue-900">{patient.conversations_today}</p>
+                      <p className="text-xs text-blue-700">Today's Chats</p>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-4 text-center">
+                      <Calendar className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-purple-900">{patient.conversations_this_week}</p>
+                      <p className="text-xs text-purple-700">This Week</p>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-4 text-center">
+                      <Heart className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                      <p className={`text-2xl font-bold ${sentiment.color}`}>{sentiment.label}</p>
+                      <p className="text-xs text-green-700">Mood Status</p>
+                    </div>
+                    <div className="bg-orange-50 rounded-lg p-4 text-center">
+                      <Activity className="w-6 h-6 text-orange-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-orange-900 capitalize">{patient.engagement_trend}</p>
+                      <p className="text-xs text-orange-700">Engagement</p>
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="bg-gray-50 rounded-lg p-5">
+                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <User className="w-5 h-5 text-gray-600" />
+                      Contact Information
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-5 h-5 text-gray-400" />
+                        <span className="text-gray-700">+1 (555) 123-4567</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-5 h-5 text-gray-400" />
+                        <span className="text-gray-700">{patient.patient_name.toLowerCase().replace(' ', '.')}@example.com</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Clock className="w-5 h-5 text-gray-400" />
+                        <span className="text-gray-700">Last active: {getTimeAgo(patient.last_interaction)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Activity */}
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-gray-600" />
+                      Recent Activity
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">Completed morning routine</p>
+                          <p className="text-sm text-gray-600">2 hours ago</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">Had conversation about family memories</p>
+                          <p className="text-sm text-gray-600">4 hours ago</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">Medication reminder acknowledged</p>
+                          <p className="text-sm text-gray-600">8 hours ago</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Alerts */}
+                  {patient.active_alerts > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <h3 className="font-bold text-red-900 mb-3 flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5" />
+                        Active Alerts ({patient.active_alerts})
+                      </h3>
+                      <div className="space-y-2">
+                        {alerts.filter(a => a.patient_name === patient.patient_name).map(alert => (
+                          <div key={alert.id} className="bg-white rounded p-3">
+                            <p className="font-medium text-gray-900">{alert.title}</p>
+                            <p className="text-sm text-gray-600">{getTimeAgo(alert.created_at)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="grid sm:grid-cols-2 gap-3 pt-4 border-t">
+                    <Link
+                      href={`/analytics/${patient.patient_id}`}
+                      className="bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium text-center flex items-center justify-center gap-2"
+                    >
+                      <TrendingUp className="w-5 h-5" />
+                      View Full Analytics
+                    </Link>
+                    <Link
+                      href="/caregiver/reminders"
+                      className="bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-medium text-center flex items-center justify-center gap-2"
+                    >
+                      <Calendar className="w-5 h-5" />
+                      Manage Reminders
+                    </Link>
+                    <Link
+                      href="/caregiver/memories"
+                      className="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-medium text-center flex items-center justify-center gap-2"
+                    >
+                      <Heart className="w-5 h-5" />
+                      Add Memory
+                    </Link>
+                    <Link
+                      href="/training"
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium text-center flex items-center justify-center gap-2"
+                    >
+                      <BookOpen className="w-5 h-5" />
+                      Training Resources
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )

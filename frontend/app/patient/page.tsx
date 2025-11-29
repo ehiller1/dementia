@@ -9,11 +9,22 @@ export default function PatientInterface() {
   const [messages, setMessages] = useState<Array<{role: string, content: string, timestamp: Date}>>([])
   const [wsConnection, setWsConnection] = useState<WebSocket | null>(null)
   const [textInput, setTextInput] = useState('')
+  const [ritualStarted, setRitualStarted] = useState(false)
+  const [ritualPhase, setRitualPhase] = useState<'greeting' | 'sharing' | 'closing' | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Large, accessible design for dementia patients
   const largeTextClass = "text-2xl"
   const extraLargeTextClass = "text-3xl"
+
+  const baseRitualStoryline = {
+    id: 'base-daily-ritual',
+    name: 'Daily Hello',
+    ritualType: 'Comfort & Connection',
+    greetingPrompt: 'Hello, it is our time to visit together. How are you feeling right now?',
+    sharingPrompt: 'Thank you for sharing. Tell me a little more about what today has been like for you.',
+    closingPrompt: 'I enjoyed our time together. We can talk again soon. Would you like to do something relaxing now, like look at pictures or listen to music?'
+  }
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages arrive
@@ -25,11 +36,16 @@ export default function PatientInterface() {
     // const ws = new WebSocket('ws://localhost:8000/ws/conversation/1')
     
     // Simulate welcome message
-    setMessages([{
+    setRitualStarted(true)
+    setRitualPhase('greeting')
+    const content = baseRitualStoryline.greetingPrompt
+    const firstMessage = {
       role: 'assistant',
-      content: 'Hello! I\'m here to chat with you. How are you feeling today?',
+      content,
       timestamp: new Date()
-    }])
+    }
+    setMessages([firstMessage])
+    speakMessage(content)
   }
 
   const handleSendMessage = () => {
@@ -45,20 +61,45 @@ export default function PatientInterface() {
 
     // Simulate AI response (in real app, this would be via WebSocket)
     setTimeout(() => {
-      const responses = [
-        'That\'s wonderful to hear. Tell me more about that.',
-        'I understand. How does that make you feel?',
-        'That sounds interesting. What happened next?',
-        'Thank you for sharing that with me.',
-      ]
-      
+      let content: string
+
+      if (ritualStarted) {
+        if (ritualPhase === 'greeting') {
+          content = baseRitualStoryline.sharingPrompt
+        } else if (ritualPhase === 'sharing') {
+          content = baseRitualStoryline.closingPrompt
+        } else {
+          content = baseRitualStoryline.closingPrompt
+        }
+      } else {
+        const responses = [
+          'That sounds like an important moment. Tell me a little more.',
+          'Thank you for sharing that. How are you feeling as you think about it?',
+          'I am listening. What happened next?',
+          'I am glad you are talking with me. Would you like to keep going?'
+        ]
+        content = responses[Math.floor(Math.random() * responses.length)]
+      }
+
       const assistantMessage = {
         role: 'assistant',
-        content: responses[Math.floor(Math.random() * responses.length)],
+        content,
         timestamp: new Date()
       }
       
       setMessages(prev => [...prev, assistantMessage])
+
+      if (ritualStarted) {
+        if (ritualPhase === 'greeting') {
+          setRitualPhase('sharing')
+        } else if (ritualPhase === 'sharing') {
+          setRitualPhase('closing')
+        } else {
+          setRitualPhase(null)
+          setRitualStarted(false)
+        }
+        speakMessage(content)
+      }
     }, 1000)
 
     setTextInput('')
@@ -100,6 +141,28 @@ export default function PatientInterface() {
 
       {/* Conversation Area */}
       <div className="max-w-4xl mx-auto">
+        {ritualStarted && (
+          <div className="mb-4 flex justify-center gap-8">
+            <div className={`flex flex-col items-center ${ritualPhase === 'greeting' ? 'text-blue-700' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 ${ritualPhase === 'greeting' ? 'border-blue-700 bg-blue-50' : 'border-gray-300 bg-white'}`}>
+                1
+              </div>
+              <p className="mt-2 text-lg font-semibold">Hello</p>
+            </div>
+            <div className={`flex flex-col items-center ${ritualPhase === 'sharing' ? 'text-green-700' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 ${ritualPhase === 'sharing' ? 'border-green-700 bg-green-50' : 'border-gray-300 bg-white'}`}>
+                2
+              </div>
+              <p className="mt-2 text-lg font-semibold">Share</p>
+            </div>
+            <div className={`flex flex-col items-center ${ritualPhase === 'closing' ? 'text-purple-700' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center border-4 ${ritualPhase === 'closing' ? 'border-purple-700 bg-purple-50' : 'border-gray-300 bg-white'}`}>
+                3
+              </div>
+              <p className="mt-2 text-lg font-semibold">Closing</p>
+            </div>
+          </div>
+        )}
         <div className="bg-white rounded-3xl shadow-2xl p-8 mb-6 min-h-[500px] max-h-[600px] overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">

@@ -217,14 +217,20 @@ export default function MyStorylinesPage() {
 
                       {/* Actions */}
                       <div className="flex gap-3">
-                        <button className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center">
+                        <Link 
+                          href={`/my-storylines/analytics/${storyline.id}`}
+                          className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center"
+                        >
                           <BarChart3 className="w-4 h-4 mr-2" />
                           View Analytics
-                        </button>
-                        <button className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center">
+                        </Link>
+                        <Link 
+                          href={`/my-storylines/configuration/${storyline.id}`}
+                          className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center"
+                        >
                           <Settings className="w-4 h-4 mr-2" />
                           Configure
-                        </button>
+                        </Link>
                         {storyline.status === 'trial' ? (
                           <button className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
                             Activate Subscription

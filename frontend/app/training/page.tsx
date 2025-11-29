@@ -65,72 +65,75 @@ export default function CaregiverTrainingPage() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-        <div className="container mx-auto px-6 py-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <Link 
             href="/caregiver"
-            className="inline-flex items-center text-purple-100 hover:text-white mb-4"
+            className="inline-flex items-center text-purple-100 hover:text-white mb-4 text-sm sm:text-base"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Link>
           
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Family Training</h1>
-              <p className="text-purple-100">Learn how to communicate with someone who has memory loss</p>
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Family Training</h1>
+              <p className="text-purple-100 text-sm sm:text-base">Learn how to communicate with someone who has memory loss</p>
             </div>
-            <BookOpen className="w-16 h-16 opacity-50" />
+            <BookOpen className="hidden sm:block w-12 h-12 md:w-16 md:h-16 opacity-50" />
           </div>
         </div>
       </div>
       
       {/* Tabs */}
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm p-2 flex gap-2 mb-8">
+          <div className="bg-white rounded-lg shadow-sm p-1 sm:p-2 flex flex-col sm:flex-row gap-1 sm:gap-2 mb-6 sm:mb-8">
             <button
               onClick={() => setActiveTab('practice')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                 activeTab === 'practice'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <Mic className="w-5 h-5 inline mr-2" />
-              Practice & Get Feedback
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Practice & Get Feedback</span>
+              <span className="sm:hidden">Practice</span>
             </button>
             <button
               onClick={() => setActiveTab('learn')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                 activeTab === 'learn'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <BookOpen className="w-5 h-5 inline mr-2" />
-              Learn Best Practices
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Learn Best Practices</span>
+              <span className="sm:hidden">Learn</span>
             </button>
             <button
               onClick={() => setActiveTab('examples')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                 activeTab === 'examples'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <MessageSquare className="w-5 h-5 inline mr-2" />
-              Example Conversations
+              <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Example Conversations</span>
+              <span className="sm:hidden">Examples</span>
             </button>
           </div>
           
           {/* Practice Tab */}
           {activeTab === 'practice' && (
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
               {/* Input Section */}
-              <div className="space-y-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-bold mb-4">Enter Conversation</h2>
-                  <p className="text-gray-600 mb-4 text-sm">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Enter Conversation</h2>
+                  <p className="text-gray-600 mb-3 sm:mb-4 text-xs sm:text-sm">
                     Type or paste a conversation between you and your loved one. 
                     Use format: <code className="bg-gray-100 px-2 py-1 rounded">Caregiver: text</code> and <code className="bg-gray-100 px-2 py-1 rounded">Patient: text</code>
                   </p>
@@ -143,20 +146,20 @@ Caregiver: Good morning, Dad. It's time for our visit.
 Patient: Oh, hello.
 Caregiver: I was thinking about your garden today.
 Patient: I loved the garden..."
-                    className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
+                    className="w-full h-48 sm:h-64 p-3 sm:p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-xs sm:text-sm"
                   />
                   
-                  <div className="mt-4 flex gap-3">
+                  <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                       onClick={handleAnalyze}
                       disabled={loading || !conversationText.trim()}
-                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-3 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                     >
                       {loading ? 'Analyzing...' : 'Analyze Conversation'}
                     </button>
                     <button
                       onClick={() => setConversationText('')}
-                      className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium"
+                      className="px-4 sm:px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium text-sm sm:text-base"
                     >
                       Clear
                     </button>
@@ -164,17 +167,17 @@ Patient: I loved the garden..."
                 </div>
                 
                 {/* Recording Option */}
-                <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
-                  <h3 className="font-bold text-blue-900 mb-2 flex items-center">
-                    <Mic className="w-5 h-5 mr-2" />
+                <div className="bg-blue-50 rounded-xl border border-blue-200 p-4 sm:p-6">
+                  <h3 className="font-bold text-blue-900 mb-2 flex items-center text-sm sm:text-base">
+                    <Mic className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                     Record Live Conversation (Coming Soon)
                   </h3>
-                  <p className="text-sm text-blue-800 mb-4">
+                  <p className="text-xs sm:text-sm text-blue-800 mb-3 sm:mb-4">
                     Soon you'll be able to record audio and get instant feedback during actual conversations.
                   </p>
                   <button
                     disabled
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium opacity-50 cursor-not-allowed"
+                    className="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium opacity-50 cursor-not-allowed text-sm sm:text-base"
                   >
                     <Mic className="w-4 h-4 inline mr-2" />
                     Start Recording
@@ -185,40 +188,40 @@ Patient: I loved the garden..."
               {/* Results Section */}
               <div>
                 {!analysis && (
-                  <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
-                    <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                    <p className="text-gray-600">
+                  <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-8 sm:p-12 text-center">
+                    <FileText className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-400 mb-3 sm:mb-4" />
+                    <p className="text-gray-600 text-sm sm:text-base">
                       Enter a conversation and click "Analyze" to receive detailed feedback on your interaction.
                     </p>
                   </div>
                 )}
                 
                 {analysis && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {/* Overall Score */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-bold">Overall Score</h2>
-                        <div className={`text-4xl font-bold px-6 py-2 rounded-lg ${getGradeColor(analysis.grade)}`}>
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h2 className="text-xl sm:text-2xl font-bold">Overall Score</h2>
+                        <div className={`text-2xl sm:text-4xl font-bold px-4 sm:px-6 py-1 sm:py-2 rounded-lg ${getGradeColor(analysis.grade)}`}>
                           {analysis.grade}
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="flex-1 bg-gray-200 rounded-full h-4">
+                      <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="flex-1 bg-gray-200 rounded-full h-3 sm:h-4">
                           <div
-                            className="bg-purple-600 h-4 rounded-full transition-all"
+                            className="bg-purple-600 h-3 sm:h-4 rounded-full transition-all"
                             style={{ width: `${analysis.overall_score * 100}%` }}
                           ></div>
                         </div>
-                        <span className="text-2xl font-bold text-purple-600">
+                        <span className="text-lg sm:text-2xl font-bold text-purple-600">
                           {Math.round(analysis.overall_score * 100)}%
                         </span>
                       </div>
                     </div>
                     
                     {/* Principle Scores */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                      <h3 className="text-xl font-bold mb-4">Care Principles</h3>
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                      <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Care Principles</h3>
                       <div className="space-y-4">
                         {Object.entries(analysis.principle_scores).map(([key, data]: [string, any]) => (
                           <div key={key}>
@@ -262,8 +265,8 @@ Patient: I loved the garden..."
                     
                     {/* Violations */}
                     {analysis.violations && analysis.violations.length > 0 && (
-                      <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-                        <h3 className="text-xl font-bold text-red-900 mb-4 flex items-center">
+                      <div className="bg-red-50 rounded-xl border border-red-200 p-4 sm:p-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-3 sm:mb-4 flex items-center">
                           <XCircle className="w-6 h-6 mr-2" />
                           What NOT to Do ({analysis.violations.length})
                         </h3>
@@ -296,8 +299,8 @@ Patient: I loved the garden..."
                     
                     {/* Strengths */}
                     {analysis.strengths && analysis.strengths.length > 0 && (
-                      <div className="bg-green-50 rounded-xl border border-green-200 p-6">
-                        <h3 className="text-xl font-bold text-green-900 mb-4 flex items-center">
+                      <div className="bg-green-50 rounded-xl border border-green-200 p-4 sm:p-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-green-900 mb-3 sm:mb-4 flex items-center">
                           <CheckCircle className="w-6 h-6 mr-2" />
                           What You Did Well
                         </h3>
@@ -314,8 +317,8 @@ Patient: I loved the garden..."
                     
                     {/* Recommendations */}
                     {analysis.recommendations && analysis.recommendations.length > 0 && (
-                      <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
-                        <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center">
+                      <div className="bg-blue-50 rounded-xl border border-blue-200 p-4 sm:p-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-blue-900 mb-3 sm:mb-4 flex items-center">
                           <TrendingUp className="w-6 h-6 mr-2" />
                           Recommendations
                         </h3>
@@ -354,9 +357,9 @@ Patient: I loved the garden..."
           
           {/* Learn Tab */}
           {activeTab === 'learn' && (
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-2xl font-bold mb-4 text-green-800">✓ Do These Things</h2>
+            <div className="grid md:grid-cols-2 gap-4 sm:gap-8">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-green-800">✓ Do These Things</h2>
                 <ul className="space-y-3">
                   {[
                     'Use their name often',
@@ -378,8 +381,8 @@ Patient: I loved the garden..."
                 </ul>
               </div>
               
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-2xl font-bold mb-4 text-red-800">✗ Avoid These Things</h2>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-red-800">✗ Avoid These Things</h2>
                 <ul className="space-y-3">
                   {[
                     'Never ask "Do you remember?"',
@@ -401,9 +404,9 @@ Patient: I loved the garden..."
                 </ul>
               </div>
               
-              <div className="md:col-span-2 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl border border-purple-200 p-8">
-                <h2 className="text-2xl font-bold mb-4">The 7-Minute Ideal Visit</h2>
-                <div className="grid md:grid-cols-3 gap-6">
+              <div className="md:col-span-2 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl border border-purple-200 p-4 sm:p-6 md:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">The 7-Minute Ideal Visit</h2>
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
                   {[
                     { phase: '0-1 min', name: 'Arrival', focus: 'Predictability & Safety' },
                     { phase: '1-2 min', name: 'Gentle Orientation', focus: 'Without Testing' },
@@ -425,13 +428,13 @@ Patient: I loved the garden..."
           
           {/* Examples Tab */}
           {activeTab === 'examples' && (
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-xl shadow-sm border border-green-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                  <h2 className="text-2xl font-bold text-green-800">Good Example</h2>
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
+              <div className="bg-white rounded-xl shadow-sm border border-green-200 p-4 sm:p-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-green-800">Good Example</h2>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 mb-4 font-mono text-sm space-y-2">
+                <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 font-mono text-xs sm:text-sm space-y-2">
                   <div><span className="font-bold text-blue-600">Caregiver:</span> Good morning, Dad. It's time for our visit. I'm here with you.</div>
                   <div><span className="font-bold text-purple-600">Patient:</span> Oh, hello.</div>
                   <div><span className="font-bold text-blue-600">Caregiver:</span> It's a calm morning. You're at home, and things are okay right now.</div>
@@ -460,12 +463,12 @@ Patient: I loved the garden..."
                 </ul>
               </div>
               
-              <div className="bg-white rounded-xl shadow-sm border border-red-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <XCircle className="w-8 h-8 text-red-600" />
-                  <h2 className="text-2xl font-bold text-red-800">What NOT to Do</h2>
+              <div className="bg-white rounded-xl shadow-sm border border-red-200 p-4 sm:p-6">
+                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <XCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-red-800">What NOT to Do</h2>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 mb-4 font-mono text-sm space-y-2">
+                <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 font-mono text-xs sm:text-sm space-y-2">
                   <div><span className="font-bold text-blue-600">Caregiver:</span> Hi Dad! Do you remember me?</div>
                   <div><span className="font-bold text-purple-600">Patient:</span> Oh, hello.</div>
                   <div><span className="font-bold text-blue-600">Caregiver:</span> Do you remember that yesterday we went to the park?</div>

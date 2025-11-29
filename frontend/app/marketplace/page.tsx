@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { ShoppingCart, Star, Clock, Users, Sparkles, Music, Camera, Heart, Flower, Flag } from 'lucide-react'
+import { ShoppingCart, Star, Clock, Users, Sparkles, Music, Camera, Heart, Flower, Flag, Play, Pause, Volume2 } from 'lucide-react'
 
 // Mock storyline data (in production, fetch from API)
+// Based on memory care ritual research: consistent, predictable, emotionally positive interactions
 const featuredStorylines = [
   {
     id: 1,
@@ -22,7 +24,9 @@ const featuredStorylines = [
       'Weekly usage reports'
     ],
     popular: true,
-    testimonial: '"Dad lights up when he sees pictures of the grandkids!" - Sarah M.'
+    testimonial: '"Dad lights up when he sees pictures of the grandkids!" - Sarah M.',
+    ritualType: 'Connection Ritual',
+    audioSample: 'Let\'s look at some wonderful memories together. Here\'s a beautiful photo from your granddaughter Emily\'s graduation. You must have been so proud that day. Can you tell me what you remember?'
   },
   {
     id: 2,
@@ -41,7 +45,9 @@ const featuredStorylines = [
       'Sing-along encouragement'
     ],
     popular: true,
-    testimonial: '"Mom remembers every word to her favorite songs" - James T.'
+    testimonial: '"Mom remembers every word to her favorite songs" - James T.',
+    ritualType: 'Comfort Ritual',
+    audioSample: 'Good afternoon. It\'s time for our music session. I have some wonderful songs from the 1960s lined up for you today. Let\'s start with your favorite, Moon River. Feel free to sing along.'
   },
   {
     id: 3,
@@ -59,7 +65,9 @@ const featuredStorylines = [
       'Reduces anxiety and agitation',
       'Multiple scenic locations'
     ],
-    popular: false
+    popular: false,
+    ritualType: 'Calming Ritual',
+    audioSample: 'Let\'s take a peaceful walk through the garden today. Listen to the gentle sounds of birds singing and leaves rustling in the breeze. Take a deep breath and feel the calm wash over you.'
   },
   {
     id: 4,
@@ -77,7 +85,9 @@ const featuredStorylines = [
       'Voice note exchanges',
       'Captures precious moments'
     ],
-    popular: false
+    popular: false,
+    ritualType: 'Connection Ritual',
+    audioSample: 'You have a message from your grandson Tommy. He says: Hi Grandma! I got an A on my science project! I used the volcano idea you told me about. I miss you and can\'t wait to see you this weekend!'
   },
   {
     id: 5,
@@ -95,7 +105,9 @@ const featuredStorylines = [
       'Plant identification games',
       'Shares gardening wisdom'
     ],
-    popular: false
+    popular: false,
+    ritualType: 'Identity Ritual',
+    audioSample: 'Welcome to your garden time. The roses are blooming beautifully this season. Tell me about your favorite rose variety. I remember you mentioned you love the Peace roses with their yellow and pink petals.'
   },
   {
     id: 6,
@@ -113,7 +125,9 @@ const featuredStorylines = [
       'Era-specific content',
       'Avoids trauma triggers'
     ],
-    popular: false
+    popular: false,
+    ritualType: 'Identity Ritual',
+    audioSample: 'Good morning, soldier. Thank you for your service. Today I\'d like to hear about your time in the service. What was your favorite memory from your days in uniform? Your country is grateful for your dedication.'
   }
 ]
 
@@ -126,6 +140,41 @@ const categories = [
 ]
 
 export default function MarketplacePage() {
+  const [playingAudio, setPlayingAudio] = useState<number | null>(null)
+  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesis | null>(null)
+
+  // Initialize speech synthesis on client side
+  useState(() => {
+    if (typeof window !== 'undefined') {
+      setSpeechSynthesis(window.speechSynthesis)
+    }
+  })
+
+  const handlePlayAudio = (storylineId: number, audioText: string) => {
+    if (!speechSynthesis) return
+
+    // Stop any currently playing audio
+    speechSynthesis.cancel()
+
+    if (playingAudio === storylineId) {
+      setPlayingAudio(null)
+      return
+    }
+
+    // Play new audio
+    const utterance = new SpeechSynthesisUtterance(audioText)
+    utterance.rate = 0.85 // Slower, clearer speech
+    utterance.pitch = 1.0
+    utterance.volume = 1.0
+
+    utterance.onend = () => {
+      setPlayingAudio(null)
+    }
+
+    speechSynthesis.speak(utterance)
+    setPlayingAudio(storylineId)
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header */}
@@ -158,6 +207,50 @@ export default function MarketplacePage() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
+        
+        {/* Ritual Research Explanation */}
+        <div className="max-w-5xl mx-auto mb-12">
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border-2 border-blue-200">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Star className="w-8 h-8 text-yellow-500 fill-current" />
+              Built on Memory Care Research
+            </h2>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              Our storylines are designed based on <strong>ritual research in dementia care</strong>. Studies show that 
+              consistent, predictable, emotionally positive interactions at the same time each day create 
+              comforting rituals that reduce anxiety and improve wellbeing.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="font-bold text-blue-900 mb-2">🔄 Connection Rituals</h3>
+                <p className="text-sm text-gray-600">
+                  Regular interactions with family photos, messages, and memories that maintain emotional bonds
+                </p>
+              </div>
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="font-bold text-green-900 mb-2">💚 Comfort Rituals</h3>
+                <p className="text-sm text-gray-600">
+                  Music, nature, and sensory experiences that provide predictable calm and joy
+                </p>
+              </div>
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="font-bold text-purple-900 mb-2">⭐ Identity Rituals</h3>
+                <p className="text-sm text-gray-600">
+                  Activities honoring lifelong interests that reinforce sense of self and purpose
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 bg-blue-100 rounded-lg p-4">
+              <p className="text-sm text-blue-900">
+                <strong>💡 Key Finding:</strong> 7-minute daily sessions at consistent times show the best results. 
+                Each storyline is optimized for this "ideal visit" duration to prevent overstimulation while maximizing engagement.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Category Filter */}
         <div className="max-w-5xl mx-auto mb-8">
           <div className="bg-white rounded-lg shadow-sm p-4">
@@ -205,10 +298,13 @@ export default function MarketplacePage() {
                     )}
                     
                     <div className="p-6">
-                      <div className="flex items-start mb-4">
+                      <div className="flex items-start justify-between mb-4">
                         <div className="bg-purple-100 p-3 rounded-lg">
                           <Icon className="w-8 h-8 text-purple-600" />
                         </div>
+                        <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                          {storyline.ritualType}
+                        </span>
                       </div>
                       
                       <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -218,6 +314,27 @@ export default function MarketplacePage() {
                       <p className="text-gray-600 text-sm mb-4">
                         {storyline.description}
                       </p>
+                      
+                      {/* Audio Preview */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handlePlayAudio(storyline.id, storyline.audioSample)
+                        }}
+                        className="w-full mb-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 hover:border-green-300 rounded-lg p-3 flex items-center justify-center gap-2 text-green-700 font-medium transition-all"
+                      >
+                        {playingAudio === storyline.id ? (
+                          <>
+                            <Pause className="w-5 h-5" />
+                            Playing Sample...
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="w-5 h-5" />
+                            🎧 Hear Audio Sample
+                          </>
+                        )}
+                      </button>
                       
                       <ul className="space-y-2 mb-4">
                         {storyline.features.slice(0, 2).map((feature, idx) => (

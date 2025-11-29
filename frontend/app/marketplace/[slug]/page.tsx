@@ -304,7 +304,7 @@ export default function StorylineDetailPage() {
                 Cancel
               </button>
               <button
-                onClick={() => router.push('/auth/signup?trial=' + slug)}
+                onClick={() => router.push('/checkout?slug=' + slug + '&trial=true')}
                 className="flex-1 bg-purple-600 text-white px-4 py-3 rounded-lg font-bold hover:bg-purple-700"
               >
                 Continue →
