@@ -1,229 +1,37 @@
-# ============================================================================
-# Build Outputs & Distribution
-# ============================================================================
-dist/
-dist-server/
-dist-ssr/
-build/
-*.tsbuildinfo
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ============================================================================
-# Dependencies
-# ============================================================================
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# Node.js
-node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# testing
+/coverage
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.coverage
-htmlcov/
-*.egg-info/
-dist-python/
+# next.js
+/.next/
+/out/
+/node_modules
 
-# ============================================================================
-# Logs & Process Files
-# ============================================================================
-logs/
-*.log
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# All log files
-backend-debug.log
-backend-redis.log
-backend.log
-real-server.log
-server-debug.log
-server-real.log
-server-startup.log
-server-test.log
-server-with-meta.log
-server.log
-meta-server.log
-frontend-dev.log
-frontend.log
-simulation.log
+# local env files
+.env*.local
 
-# Process ID files
-*.pid
-server.pid
+# vercel
+.vercel
 
-# ============================================================================
-# Project-Specific
-# ============================================================================
-# Backups
-*.backup
-*.bak
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
-# Supabase
-supabase/.temp/
-
-# Quest Agent Forge specific
-.windsurf/
-*-BACKUP-*
-
-# ============================================================================
-# Exclude from Repository
-# ============================================================================
-
-# SQL migration files (database/migrations/ is preserved but not pushed)
-database/migrations/*.sql
-
-# Test, fix, generate, and debug files
-test-*
-**/test-*
-fix-*
-**/fix-*
-generate-*
-**/generate-*
-generate*
-**/generate*
-debug-*
-**/debug-*
-debug*
-**/debug*
-
-# Old SDK directories (consolidated into python/sdk/)
-external-agent-sdk/
-sdk/
-
-# ============================================================================
-# Database & Redis
-# ============================================================================
-
-# Redis
-dump.rdb
-*.rdb
-appendonly.aof
-
-# PostgreSQL
-*.sql.backup
-pg_dump_*.sql
-
-# Keep schema files but ignore dumps
-!database/migrations/*.sql
-!database/schemas/*.sql
-!database/seeds/*.sql
-
-# ============================================================================
-# Environment & Secrets
-# ============================================================================
-
-*.pem
-*.key
-*.crt
-secrets/
-
-# Keep example files
-!.env.example
-!.env.test.example
-
-# ============================================================================
-# Editor & IDE
-# ============================================================================
-.idea/
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-.DS_Store
-*.swp
-*.swo
-*~
-.project
-.classpath
-.c9/
-.settings/
-.loadpath
-.factorypath
-*.sublime-workspace
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# ============================================================================
-# Testing
-# ============================================================================
-coverage/
-.nyc_output/
-test-results/
-test-reports/
-*.spec.js.snap
-*.spec.ts.snap
-
-# Keep test files in source
-!**/*.test.js
-!**/*.test.ts
-!**/*.spec.js
-!**/*.spec.ts
-
-# ============================================================================
-# Temporary & Cache Files
-# ============================================================================
-*.tmp
-*.temp
-.cache/
-.parcel-cache/
-.next/
-.nuxt/
-.turbo/
-.vercel/
-.netlify/
-
-# ============================================================================
-# OS Files
-# ============================================================================
-Thumbs.db
-Desktop.ini
-.Spotlight-V100
-.Trashes
-
-# ============================================================================
-# Documentation Build Outputs
-# ============================================================================
-# Keep all documentation source but ignore builds
-docs/_build/
-docs/.doctrees/
-
-# ============================================================================
-# Project-Specific Exclusions
-# ============================================================================
-
-# Ignore pathfinder-kit if it's external
-pathfinder-kit-main/
-
-# Workspace files
-*.code-workspace
-!quest-agent-forge-main.code-workspace
-
-# ============================================================================
-# IMPORTANT: Keep These Files
-# ============================================================================
-!README.md
-!requirements.txt
-!package.json
-!tsconfig*.json
-!vite.config.ts
-!Makefile
-!Dockerfile*
-!docker-compose.yml
